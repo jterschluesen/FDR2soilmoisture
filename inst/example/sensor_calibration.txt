@@ -436,3 +436,7 @@ PR2/6_035-004	6	1.09	66.66	Grosse	PR2, SDI-12	035-004	04.12.2024	Permittivity	16
 999	1			dummy placeholder, to be used for unknown devices	Theta Probe	Theta Probe	01.05.2023	Permittivity	
 999	1			dummy placeholder, to be used for unknown devices	TDR_CS645-L	TDR_CS645-L	01.05.2023	Permittivity	
 999	1	-2	1084	Grosse	Theta Probe	327-095	16.01.2024	Voltage	12.60
+picoSMT_test	1	19567	10954	Terschluesen	picoSMS	picoSMT_test	09.09.2025	Voltage	25.875
+picoSMT_train	1	19534	10967	Terschluesen	picoSMS	picoSMT_train	09.09.2025	Voltage	25.875
+picoSMT_test_poly	1	19567	10954	Terschluesen	picoSMS_poly	picoSMT_test_poly	09.09.2025	Voltage	25.875
+picoSMT_train_poly	1	19534	10967	Terschluesen	picoSMS_poly	picoSMT_train_poly	09.09.2025	Voltage	25.875

@@ -63,9 +63,11 @@ correct_sensor_values <- function(values, serial_no=NULL, probe_id=NULL, var_typ
 
     # prepare warning message
     probe_id_str <- paste0(ifelse(is.null(unique_settings$probe_id), paste0("serial_no '", unique_settings$serial_no[ss]), paste0("probe-id '", unique_settings$probe_id[ss])), "', ring '", unique_settings$ring_no[ss])
-
-    sign <- ifelse(unique_settings[ss, "var_type"] == "Counts", -1, 1) # for SMT100, "voltage" (actually "counts") are negatively correalted to epsilon
-
+    is_pico = (unique_settings[ss, "type"] == "picoSMS"||unique_settings[ss, "type"] == "picoSMS_poly"||unique_settings[ss, "type"] == "picoSMS_linear")
+    #sign <- ifelse(unique_settings[ss, "var_type"] == "Counts", -1, 1) # for SMT100, "voltage" (actually "counts") are negatively correalted to epsilon
+    sign <- ifelse(unique_settings[ss, "var_type"] == "Counts" || is_pico, -1, 1) # for SMT100 and picoSMS, "voltage" ("counts") are negatively correalted to epsilon
+    
+    
     if (sign == 1) # for PR2 and ThetaProbe: raw value (voltages) increases with permittivity
       {
         beyond_air <- Vmin_measured < unique_settings[ss, "var_air_meas"]
@@ -281,9 +283,11 @@ correct_sensor_values_all <- function(values, serial_no=NULL, probe_id=NULL, var
 
     # prepare warning message
     probe_id_str <- paste0(ifelse(is.null(unique_settings$probe_id), paste0("serial_no '", unique_settings$serial_no[ss]), paste0("probe-id '", unique_settings$probe_id[ss])), "', ring '", unique_settings$ring_no[ss])
-
-    sign <- ifelse(unique_settings[ss, "var_type"] == "Counts", -1, 1) # for SMT100, "voltage" (actually "counts") are negatively correalted to epsilon
-
+    
+    is_pico = (unique_settings[ss, "type"] == "picoSMS"||unique_settings[ss, "type"] == "picoSMS_poly"||unique_settings[ss, "type"] == "picoSMS_linear")
+    #sign <- ifelse(unique_settings[ss, "var_type"] == "Counts", -1, 1) # for SMT100, and picoSMS "voltage" ("counts") are negatively correalted to epsilon
+    sign <- ifelse(unique_settings[ss, "var_type"] == "Counts" || is_pico, -1, 1)
+    
     if (sign == 1) # for PR2 and ThetaProbe: raw value (voltages) increases with permittivity
       {
         beyond_air <- Vmin_measured < unique_settings[ss, "var_air_meas"]
@@ -374,7 +378,8 @@ correct_sensor_values_all <- function(values, serial_no=NULL, probe_id=NULL, var
         var_h2o_meas = unique_settings[ss, "var_h2o_meas"],
         type = unique_settings[ss, "type"],
         var_type = unique_settings[ss, "var_type"],
-        temp = unique_settings[ss, "temp_meas"], ...
+        temp = unique_settings[ss, "temp_meas"],
+        scaling = scaling, ...
       )
     } else {
       # use normal values
@@ -384,7 +389,8 @@ correct_sensor_values_all <- function(values, serial_no=NULL, probe_id=NULL, var
         var_h2o_meas = unique_settings[ss, "var_h2o_meas"],
         type = unique_settings[ss, "type"],
         var_type = unique_settings[ss, "var_type"],
-        temp = unique_settings[ss, "temp_meas"], ...
+        temp = unique_settings[ss, "temp_meas"],
+        scaling = scaling, ...
       )
     }
   }

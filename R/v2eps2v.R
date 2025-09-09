@@ -25,7 +25,7 @@ V2eps = function(V, type, temp=NULL)
     #return(c(eps = V))
   
   if(type=="picoSMS_linear" || type=="picoSMS"){
-    if (missing(temp) || is.null(temp)) {
+    if (missing(temp) || is.null(temp)||is.na(temp)) {
       stop("'temp' must be provided and cannot be NULL.")
     }
     if(type=="picoSMS"){
@@ -35,7 +35,7 @@ V2eps = function(V, type, temp=NULL)
   }
   
   if(type=="picoSMS_poly"){
-    if (missing(temp) || is.null(temp)) {
+    if (missing(temp) || is.null(temp)||is.na(temp)) {
       stop("'temp' must be provided and cannot be NULL.")
     }
     return(c(eps=1.9284 + 43.9328 * V + 0.0181 * temp + 26.4293 * V^2 - 0.0942 * V * temp - 0.0005 * temp^2))
