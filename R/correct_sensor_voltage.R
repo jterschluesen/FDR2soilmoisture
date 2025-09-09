@@ -1,4 +1,4 @@
-correct_sensor_values <- function(values, serial_no=NULL, probe_id=NULL, var_type=NULL, ring_no=1, calib_data, warnOnly=FALSE, adjust_range=TRUE, discard_outlier=TRUE, ...)
+correct_sensor_values <- function(values, serial_no=NULL, probe_id=NULL, var_type=NULL, ring_no=1, calib_data, warnOnly=FALSE, adjust_range=TRUE, discard_outlier=TRUE, scaling = TRUE, ...)
 # converts sensor values of var_type (Voltage [V], Permittivity [-], Counts [-] ) according to calibration data in calib_data for the specified sensor and ring
 {
   # tt = get_reference_voltage(serial_no = serial_no, probe_id = probe_id, ring_no = ring_no, calib_data = calib_data)
@@ -159,7 +159,8 @@ correct_sensor_values <- function(values, serial_no=NULL, probe_id=NULL, var_typ
         var_h2o_meas = unique_settings[ss, "var_h2o_meas"],
         type = unique_settings[ss, "type"],
         var_type = unique_settings[ss, "var_type"],
-        temp = unique_settings[ss, "temp_meas"], ...
+        temp = unique_settings[ss, "temp_meas"], 
+        scaling = scaling, ...
       )
     } else {
       # use normal values
@@ -169,7 +170,8 @@ correct_sensor_values <- function(values, serial_no=NULL, probe_id=NULL, var_typ
         var_h2o_meas = unique_settings[ss, "var_h2o_meas"],
         type = unique_settings[ss, "type"],
         var_type = unique_settings[ss, "var_type"],
-        temp = unique_settings[ss, "temp_meas"], ...
+        temp = unique_settings[ss, "temp_meas"],
+        scaling = scaling, ...
       )
     }
   }
@@ -200,7 +202,7 @@ correct_sensor_voltage <- function(V, serial_no=NULL, probe_id=NULL, ring_no=1, 
   #  colnames(calib_data) <- c("probe_id", "ring_no", "air_measurement", "water_measurement", "remarks", "type", "serial_no", "date", "var_type","temp")
   #}
 
-  V_corrected <- correct_sensor_values(values = V, serial_no = serial_no, probe_id = probe_id, var_type = "Voltage", ring_no = ring_no, calib_data = calib_data, warnOnly = warnOnly, adjust_range = adjust_range, discard_outlier = TRUE)
+  V_corrected <- correct_sensor_values(values = V, serial_no = serial_no, probe_id = probe_id, var_type = "Voltage", ring_no = ring_no, calib_data = calib_data, warnOnly = warnOnly, adjust_range = adjust_range, discard_outlier = TRUE, scaling = TRUE)
   warning("Voltage is set as default var_type")
   return(V_corrected)
 }
