@@ -1,7 +1,9 @@
 # FDR2soilmoisture
 R-package for processing data of FDR-measurements (Frequency Domain Reflectrometry) to obtain soil moisture. 
 Obtain sensor specific calibrations, choose or create suitable conversion functions between voltage, permittivity and soil moisture. 
-Customized for PR2 profile probes and Theta Probes (both produced by DeltaT).
+Customized for PR2 profile probes and Theta Probes (both produced by DeltaT):
+Assuming that the deviation in the measured variable of the sensor is linear, it can be effectively corrected using two reference points. By taking measurements in both air and water for each sensor, the measured variable can be linearly transformed, ensuring that the manufacturer’s conversion from the primary measured variable to permittivity remains valid for both mediums. This entails a correction of Voltage for the ThetaProbes and PR2/6 ProfileProbes. For the SMT100 sensors permittivity can be treated as the primary variable and adjusted accordingly, since the conversion from the raw variable to permittivity provided by the manufacturer is device specific and should be preserved.
+
 The following equations for converting epsilon (permittivity) to theta (volumetric water content) are included:
 deltaT, manufacturer's equation, 
 Drnevich et al. (2005), 
