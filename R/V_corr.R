@@ -1,7 +1,7 @@
 #linear correction of sensor values using measured voltages in air and water
 
 #function depend on the input variable, e.g. counts/perm/etc
-var_corr = function(x, var_air_meas, var_h2o_meas, type, var_type, temp, ...)
+var_corr = function(x, var_air_meas, var_h2o_meas, type, var_type, temp, scaling = TRUE, ...)
 {
   # processing additional arguments for SMT100
   alpha_set <- -0.1305
@@ -44,36 +44,46 @@ var_corr = function(x, var_air_meas, var_h2o_meas, type, var_type, temp, ...)
   if (!is.null(list(...)$epsilon_1)) {
     eps_1 <- list(...)$epsilon_1
     #print("You are using your own reference values")
+  }
+  
+  if(scaling){
+  
+    #here the function depend on the input variable, e.g. counts/perm/etc
+    if (var_type=="Voltage"){
+        var_air_nominal = eps2V(eps_0, type, temp = temp) #theoretical value for voltage in air [V]
+        var_h2o_nominal = eps2V(eps_1, type, temp = temp) #theoretical value for voltage in water [V]
+        
+        if(type == "picoSMS_linear" || type == "picoSMS_poly"|| type == "picoSMS"){
+          warning("scaling = TRUE. If only a normalization of the sensorvalues is desired as it was done in Sheshadrivasan et all (2025), set scaling to FALSE")
+        }
+      
+    } else if(var_type=="Permittivity"){
+      
+      var_air_nominal = eps_0 #theoretical value for epsilon in air
+      var_h2o_nominal = eps_1 #theoretical value for epsilon in water
+      
+    } else if(var_type=="Counts"){
+      var_air_nominal = eps2counts(perm = eps_0, alpha = alpha_set, beta = beta_set, gamma = gamma_set) #theoretical value for epsilon in air
+      var_h2o_nominal = eps2counts(perm = eps_1, alpha = alpha_set, beta = beta_set, gamma = gamma_set) #theoretical value for epsilon in water
+      
+    } else{
+      var_air_nominal = NA #theoretical value for epsilon in air
+      var_h2o_nominal = NA #theoretical value for epsilon in water
+      warning("Only Voltage, Permittivity and Counts are yet implemented, giving NA for other input variables.\n")
     }
-  
-
-  
-  #here the function depend on the input variable, e.g. counts/perm/etc
-  if (var_type=="Voltage"){
-    var_air_nominal = eps2V(eps_0, type) #theoretical value for voltage in air [V]
-    var_h2o_nominal = eps2V(eps_1, type) #theoretical value for voltage in water [V]
-    
-  } else if(var_type=="Permittivity"){
-    
-    var_air_nominal = eps_0 #theoretical value for epsilon in air
-    var_h2o_nominal = eps_1 #theoretical value for epsilon in water
-    
-  } else if(var_type=="Counts"){
-    var_air_nominal = eps2counts(perm = eps_0, alpha = alpha_set, beta = beta_set, gamma = gamma_set) #theoretical value for epsilon in air
-    var_h2o_nominal = eps2counts(perm = eps_1, alpha = alpha_set, beta = beta_set, gamma = gamma_set) #theoretical value for epsilon in water
-    
-  } else{
-    var_air_nominal = NA #theoretical value for epsilon in air
-    var_h2o_nominal = NA #theoretical value for epsilon in water
-    warning("Only Voltage, Permittivity and Counts are yet implemented, giving NA for other input variables.\n")
+  }else{
+  #just normalization to be consitent with the paper
+    var_air_nominal = 0 
+    var_h2o_nominal = 1
   }
   
   # Apply a correction function to correct the measured voltage var_raw of the air (var_air_meas) and water (var_h2o_meas)
   # to the expected "should-be" ones (var_air_exp , V_h2o_exp ). Using the linear interpolation graph between those points
   
-  var_corr = (var_h2o_nominal - var_air_nominal) / (var_h2o_meas - var_air_meas) * (x - var_air_meas) + var_air_nominal
+  var_corrected = (var_h2o_nominal - var_air_nominal) / (var_h2o_meas - var_air_meas) * (x - var_air_meas) + var_air_nominal
+  
   #return corrected values
-  return(var_corr)
+  return(var_corrected)
 }
 
 #implementing older function:

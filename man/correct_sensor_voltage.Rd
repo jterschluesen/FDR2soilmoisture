@@ -9,7 +9,7 @@ Correct sensor outputs (Voltage, Permittivity) with two-point linear calibration
 
 }
 \usage{
-correct_sensor_values(values, serial_no=NULL, probe_id=NULL, var_type=NULL, ring_no=1, calib_data, warnOnly=FALSE, adjust_range=TRUE, discard_outlier=TRUE, ...)
+correct_sensor_values(values, serial_no=NULL, probe_id=NULL, var_type=NULL, ring_no=1, calib_data, warnOnly=FALSE, adjust_range=TRUE, discard_outlier=TRUE, scaling= TRUE, ...)
 
 correct_sensor_voltage(V, serial_no=NULL, probe_id=NULL, ring_no=1, calib_data, warnOnly=FALSE, adjust_range=TRUE)
 
@@ -47,12 +47,15 @@ correct_sensor_voltage(V, serial_no=NULL, probe_id=NULL, ring_no=1, calib_data, 
   \code{=True}: If enabled, all values outside the possible adjusted interval between \code{air_measurement} and \code{water_measurement} (see \code{adjust_range}), will be set to \code{NA}.
   If disabled all \code{values} are corrected.
 }
+\item{scaling}{
+  \code{=True}: If enabled, the manufacture's conversion of Voltage to Permittivity (epsilon) is used to obtain real values for air and water (scaling and offset correction). Otherwise, the values are set to 0 an 1 and the sensor values are just normalized to the measured values in water and air.
+}
   \item{...}{
   Further individual calibraion parameters for SMT100 \code{alpha}, \code{beta}, \code{gamma} to pass to \code{\link{counts2eps}} and not default permittivity reference values for the two calibration points "air" \code{epsilon_0} and "water" \code{epsilon_1}}
 }
 
 \details{
-In spite of the manufacturer's specifications, Theta Probe and PR2-instruments usually yield output voltage deviating from the specifications. This deviation seems especially pronounced for higher water contents (see 'example 2b and 2c' in examples of \link{eps2theta}) and the analogue PR2 probes, with varying offsets along the length of the rod. We assume this mismatch in voltage to be linear. Thus, it can be corrected with two reference points. The function takes these from the user calibration data (\code{calib_data}), which must contain two measurements (in air and water, respectively) for each sensor. Thus, the given raw input \code{V} is linearly transformed in a way, that the manufacture's conversion of Voltage to Permittivity (epsilon) holds for air and water.
+In spite of the manufacturer's specifications, Theta Probe and PR2-instruments usually yield output voltage deviating from the specifications. This deviation seems especially pronounced for higher water contents (see 'example 2b and 2c' in examples of \link{eps2theta}) and the analogue PR2 probes, with varying offsets along the length of the rod. We assume this mismatch in voltage to be linear. Thus, it can be corrected with two reference points. The function takes these from the user calibration data (\code{calib_data}), which must contain two measurements (in air and water, respectively) for each sensor. Thus, the given raw input \code{V} is linearly transformed in a way, that the manufacture's conversion of Voltage to Permittivity (epsilon) holds for air and water. If scaling is set to 'FALSE' the values are just normalized to the measeured values in water and air.
 
 UPDATE:
 With \code{correct_sensor_values()} corrections with two reference points can also be applied on directly measured "Permittivity" ("Theta Probe", "PR2", "TDR", "SMT100") or "Counts" (SMT100). Therfore \code{var_type} must be specified in the function and \code{calib_data}.
@@ -65,10 +68,10 @@ With \code{correct_sensor_values()} corrections with two reference points can al
 \item{\code{air_measurement}: Sensor output when sensor is in the air [mV].} 
 \item{\code{water_measurement}: Sensor output when sensor is in the water [mV].} 
 \item{\code{remarks}: (optional)} 
-\item{\code{type}: must contain the substrings "Theta Probe" OR "PR2". Used for selecting the corresponding manufacturer's conversion functions.} 
+\item{\code{type}: must contain the substrings "Theta Probe" OR "PR2" or "picoSMS". Used for selecting the corresponding manufacturer's conversion functions.} 
 \item{\code{date}: Date of calibration.}
 \item{\code{var_type}: Type of meassured variable ("Voltage"," Permittivity" or "Counts"). Necessary for \code{correct_sensor_values()}}
-\item{\code{temp}: Temperature of water}
+\item{\code{temp}: Temperature of water [Celsius]}
 
 The directory \code{example} of the package holds an example text file
 }
@@ -86,13 +89,15 @@ With the additional arguments of \code{epsilon_0 =} and \code{epsilon_1 = } it i
  \code{correct_sensor_voltage()}: Corrected voltage value [V]
 }
 \references{
-%% ~put references to the literature/web site here ~
+Sheshadrivasan V.K., Langhammer J., Scheiffele L., Terschlüsen J., Francke T. (2025): picoSMS: Development of a Low-Cost, Open-Source, Off-Grid, Soil Moisture monitoring Station, and the Calibration and Validation of commercially available Capacitive Soil Moisture Sensor for Hydrological Applications. Sensors 2025, https://zenodo.org/records/17072390
+
 }
 \author{
 Till Francke, Jakob Terschluesen
 }
 \note{
-%%  ~~further notes~~
+Following the calibration proposed for the picoSMS described in Sheshadrivasan et all 2025, the picoSMS sensors are only normalized to water and air measurements. Therefore \code{scaling} should be set to FALSE.
+
 }
 
 \section{Warnings}{

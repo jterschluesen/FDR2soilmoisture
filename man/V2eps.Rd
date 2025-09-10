@@ -9,8 +9,8 @@ Convert sensor voltage to epsilon and v.v. using manufacturer's specifications.
 Convert sensor voltage to epsilon and v.v. using manufacturer's specifications. Defined for Theta Probe and PR2 (DeltaT).
 }
 \usage{
-V2eps(V, type)
-eps2V(eps, type)
+V2eps(V, type, temp = NULL)
+eps2V(eps, type, temp = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,8 +21,11 @@ eps2V(eps, type)
 permittivity epsilon [-].
 }
   \item{type}{
-Type of sensor. Must be \code{"Theta Probe"}, \code{"Theta Probe polynomial"} OR \code{"PR2"}. See details for explanation.
+Type of sensor. Must be \code{"Theta Probe"}, \code{"Theta Probe polynomial"}, \code{"PR2"}, \code{"picoSMS_linear"} or \code{"picoSMS_poly"}. See details for explanation.
 }
+
+  \item{temp}{
+Temperature during measurements [Celsius], needed for picoSMS}
 }
 \details{
 Applies the manufacturers conversion functions or its inverse. \code{V}: voltage in [V]; \code{eps}: epsilon [-]
@@ -53,6 +56,24 @@ Values for \code{type}:
   \code{"Theta Probe":}
   interpolated lookup data table from ThetaProbe user manual table (p. 14), see details below
   }
+  
+  \item{
+  \code{"picoSMS_linear"}
+  \deqn{
+    \epsilon = 2.3811 + 70.0811 * V - 0.0337 * temp
+  }{%
+    \epsilon = 2.3811 + 70.0811 * V - 0.0337 * temp
+  }
+  }
+  
+  \item{
+  \code{"picoSMS_poly"}
+  \deqn{
+    \epsilon = 1.9284 + 43.9328 * V + 0.0181 * temp + 26.4293 * V^2 - 0.0942 * V * temp - 0.0005 * temp^2 
+  }{%
+    \epsilon = 1.9284 + 43.9328 * V + 0.0181 * temp + 26.4293 * V^2 - 0.0942 * V * temp - 0.0005 * temp^2
+  }
+  }
 }
 
 
@@ -82,10 +103,13 @@ Delta-T Devices Ltd, 1998. ThetaProbe SOIL MOISTURE SENSOR TYPE ML2 USER MANUAL 
 
 Delta-T Devices Ltd, 2016. User Manual for the Profile Probe type PR2 (PR2-UM-5.0). Delta-T Devices Ltd, Cambridge, UK.
 
+Sheshadrivasan V.K., Langhammer J., Scheiffele L., Terschlüsen J., Francke T. (2025): picoSMS: Development of a Low-Cost, Open-Source, Off-Grid, Soil Moisture monitoring Station, and the Calibration and Validation of commercially available Capacitive Soil Moisture Sensor for Hydrological Applications. Sensors 2025, https://zenodo.org/records/17072390
+
+
 
 }
 \author{
-Till Francke
+Till Francke, Jakob Terschlüsen
 }
 %\note{
 %%  ~~further notes~~

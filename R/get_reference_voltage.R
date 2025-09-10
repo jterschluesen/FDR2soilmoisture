@@ -99,7 +99,8 @@ get_reference_values<-function(serial_no=NULL, probe_id=NULL,var_type = NULL, ri
   #}
   
     # Since calibdata for voltage are in mV
-  if(var_type=="Voltage"){
+  is_pico = (type == "picoSMS"||type == "picoSMS_poly"||type == "picoSMS_linear")
+  if(var_type=="Voltage" & !is_pico){
     var_air_meas = var_air_meas / 1000
     var_h2o_meas = var_h2o_meas / 1000
     }
